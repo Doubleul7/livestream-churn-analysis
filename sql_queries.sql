@@ -65,3 +65,31 @@ SELECT Gender, COUNT(*) AS TotalUsers,
        ROUND(1.0 * SUM(CASE WHEN Churn = 1 THEN 1 ELSE 0 END) / COUNT(*), 2) AS ChurnRate
 FROM users
 GROUP BY Gender;
+
+-- 11. Login Device Preference among Churned Users
+SELECT PreferredLoginDevice, COUNT(*) AS ChurnedCount
+FROM users
+WHERE Churn = 1
+GROUP BY PreferredLoginDevice
+ORDER BY ChurnedCount DESC;
+
+-- 12. Age Group Churn Distribution
+SELECT AgeGroup, COUNT(*) AS ChurnedCount
+FROM users
+WHERE Churn = 1
+GROUP BY AgeGroup
+ORDER BY AgeGroup;
+
+-- 13. Marital Status and Churn Rate
+SELECT MaritalStatus,
+       COUNT(*) AS Total,
+       SUM(CASE WHEN Churn = 1 THEN 1 ELSE 0 END) AS Churned,
+       ROUND(SUM(CASE WHEN Churn = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 2) AS ChurnRate
+FROM users
+GROUP BY MaritalStatus;
+
+-- 14. Coupon Usage and Churn
+SELECT Churn,
+       ROUND(AVG(CouponUsed), 2) AS AvgCouponsUsed
+FROM users
+GROUP BY Churn;
