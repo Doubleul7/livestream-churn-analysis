@@ -358,4 +358,5 @@ new_users_low_conversion.head()
 ```
 ### Step 6: Public Colab Notebook
 
-Access and run the notebook online via [Google Colab]([your_colab_link_here](https://colab.research.google.com/drive/13POkTRazYhdS-U8PVJ31LNDrFkGZ5cMN?usp=sharing)).
+Access and run the notebook online via [Google Colab](https://colab.research.google.com/drive/13POkTRazYhdS-U8PVJ31LNDrFkGZ5cMN?usp=sharing)
+
