@@ -1,0 +1,35 @@
+# SQL → pandas → plot example: LoginDevice preference analysis
+
+import sqlite3
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Create an in-memory SQLite connection (or replace with 'your_database.db' for file-based DB)
+conn = sqlite3.connect(":memory:")
+
+# Optional: load your Excel dataset into a pandas DataFrame and store it as an SQL table
+# df = pd.read_excel("your_dataset.xlsx")
+# df.to_sql("users", conn, index=False, if_exists="replace")
+
+# SQL query: count of churned users grouped by login device
+query = '''
+SELECT PreferredLoginDevice, COUNT(*) AS ChurnedCount
+FROM users
+WHERE Churn = 1
+GROUP BY PreferredLoginDevice
+ORDER BY ChurnedCount DESC;
+'''
+
+# Execute query and load results into a pandas DataFrame
+device_df = pd.read_sql(query, conn)
+
+# Plotting the result
+plt.figure(figsize=(6,4))
+sns.barplot(data=device_df, x="PreferredLoginDevice", y="ChurnedCount", palette="viridis")
+plt.title("Churned Users by Login Device")
+plt.xlabel("Device")
+plt.ylabel("Churn Count")
+plt.xticks(rotation=20)
+plt.tight_layout()
+plt.show()
