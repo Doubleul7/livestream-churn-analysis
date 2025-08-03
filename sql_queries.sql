@@ -1,53 +1,67 @@
---   sql_queries.sql
--- SQL queries used in the livestream e-commerce user churn analysis project
--- These queries were executed via SQLite in Google Colab using the %sql magic extension
+-- sql_queries.sql
+-- SQL segmentation logic based on churn analysis project
 
---  Query 1: Churned vs. Active User Count
-SELECT Churn, COUNT(*) AS user_count
+-- 1. Churn Distribution Summary
+SELECT Churn, COUNT(*) AS UserCount
 FROM users
 GROUP BY Churn;
 
---  Query 2: Average Tenure and App Usage by Churn Status
-SELECT Churn,
-       ROUND(AVG(Tenure), 2) AS avg_tenure,
-       ROUND(AVG(HourSpendOnApp), 2) AS avg_app_hours
+-- 2. Churned Users by City Tier
+SELECT CityTier, COUNT(*) AS ChurnedCount
 FROM users
-GROUP BY Churn;
+WHERE Churn = 1
+GROUP BY CityTier
+ORDER BY ChurnedCount DESC;
 
---  Query 3: Count of Users by City Tier and Churn Status
-SELECT CityTier, Churn, COUNT(*) AS user_count
+-- 3. Churned Users by Gender
+SELECT Gender, COUNT(*) AS ChurnedCount
 FROM users
-GROUP BY CityTier, Churn
-ORDER BY CityTier, Churn;
+WHERE Churn = 1
+GROUP BY Gender;
 
---  Query 4: Satisfaction Score Distribution for Churned Users
-SELECT SatisfactionScore, COUNT(*) AS count
+-- 4. Churned Users by Complaint Status
+SELECT Complain, COUNT(*) AS ChurnedCount
+FROM users
+WHERE Churn = 1
+GROUP BY Complain;
+
+-- 5. Churned Users by Satisfaction Score
+SELECT SatisfactionScore, COUNT(*) AS ChurnedCount
 FROM users
 WHERE Churn = 1
 GROUP BY SatisfactionScore
 ORDER BY SatisfactionScore;
 
---  Query 5: Identify Dormant but Loyal At-Risk Users
+-- 6. RFA Distribution Summary
+SELECT Churn,
+       AVG(DaySinceLastOrder) AS AvgRecency,
+       AVG(Tenure) AS AvgFrequency,
+       AVG(HourSpendOnApp) AS AvgActivity
+FROM users
+GROUP BY Churn;
+
+-- 7. Dormant Loyal Users (High Tenure + Inactive + Complaint or Low Satisfaction)
 SELECT *
 FROM users
 WHERE Tenure > 6
   AND DaySinceLastOrder > 15
   AND (SatisfactionScore <= 3 OR Complain = 1);
 
---  Query 6: Identify Low-Conversion New Users
+-- 8. New Users with Low Conversion
 SELECT *
 FROM users
 WHERE Tenure <= 3
   AND DaySinceLastOrder > 10;
 
---  Query 7: Aggregate Cashback vs. Churn
-SELECT Churn,
-       ROUND(AVG(CashbackAmount), 2) AS avg_cashback
+-- 9. High Churn in Tier 1 Cities (Flag for further A/B testing)
+SELECT *
 FROM users
-GROUP BY Churn;
+WHERE CityTier = 1
+  AND Churn = 1;
 
---  Query 8: Complaint Rate by Churn Status
-SELECT Churn,
-       ROUND(AVG(Complain), 2) AS complaint_rate
+-- 10. Gender-Based Churn Behavior
+SELECT Gender, COUNT(*) AS TotalUsers,
+       SUM(CASE WHEN Churn = 1 THEN 1 ELSE 0 END) AS ChurnedUsers,
+       ROUND(1.0 * SUM(CASE WHEN Churn = 1 THEN 1 ELSE 0 END) / COUNT(*), 2) AS ChurnRate
 FROM users
-GROUP BY Churn;
+GROUP BY Gender;
