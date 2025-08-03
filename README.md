@@ -1,106 +1,83 @@
-# livestream-churn-analysis
-A data-driven user churn and retention analysis project for livestream e-commerce platforms
+# Livestream E-commerce User Churn Analysis using Simulated Data ([Dataset Link](#))
 
-# 🛍️ Livestream E-commerce User Churn & Behavior Analysis
+## Objectives
 
-This project simulates a real-world churn and behavioral analysis for a livestream e-commerce platform. It is designed as a portfolio case to demonstrate my ability in data analysis, SQL querying, user segmentation, and business insight generation — tailored for roles like **Strategy Intern at TikTok E-commerce**.
+* Segment users into churned and active groups based on purchasing behavior.
+* Profile churned users to identify key characteristics driving churn.
+* Quantify differences between churned and active users using an RFA (Recency, Frequency, Activity) model.
+* Identify at-risk user segments to guide targeted retention strategies.
+* Formulate actionable recommendations for increasing retention and conversion.
 
----
+## Data
 
-## 🔍 Project Objectives
+* Simulated e-commerce user behavior dataset in Excel (.xlsx), containing user demographics, engagement metrics, satisfaction scores, complaint history, and churn labels.
 
-* Segment users into **churned** and **active** based on behavior
-* Analyze the **behavioral traits** of churned users
-* Compare groups using a custom **RFA model** (Recency, Frequency, Activity)
-* Identify **at-risk segments** & propose **order volume growth strategies**
-* Showcase **SQL querying capabilities** alongside Python-based data analysis
+## Stack
 
----
+* Python 3.9
 
-## 🧰 Tools & Stack
+  * pandas 2.0
+  * seaborn 0.12
+  * matplotlib 3.7
+* SQL (SQLite)
+* Jupyter Notebook / Google Colab
 
-* **Python**: `pandas`, `seaborn`, `matplotlib`
-* **SQL**: via `sqlite3` and `%sql` magic in Google Colab
-* \*\*Google Colab / Jupyter Notebook\`
-* **Excel**: input dataset in `.xlsx` format
-
----
-
-## 📁 Project Structure
+## Folder Structure
 
 ```
 livestream-churn-analysis/
-├── 📘 README.md                 <- You are here
-├── 📓 churn_analysis.ipynb      <- Main analysis notebook (Colab)
-├── 📄 final_report.pdf          <- Optional summary report for download
-├── 🧮 sql_queries.sql           <- All SQL queries used
-├── 📊 visuals/                  <- Saved analysis charts (e.g., churn_by_gender.png)
-└── 📂 data/                     <- Original Excel file or link
+├── README.md                   # Project overview and instructions
+├── churn_analysis.ipynb        # Main analysis notebook
+├── sql_queries.sql             # SQL queries for data segmentation
+├── final_report.pdf            # Summary of key findings (optional)
+├── visuals/                    # Output plots from analysis
+└── data/                       # Original Excel dataset
 ```
 
----
+## Key Findings
 
-## 📊 Key Findings
+* **65%** of churned users had tenure less than **3 months**, highlighting early-stage churn risk.
+* **Tier 1 cities** accounted for **40%** of churned users, higher than expected.
+* Approximately **35%** of churned users submitted complaints, indicating service-related issues.
+* Users with tenure greater than **6 months** demonstrated significantly lower churn rates (<10%).
 
-### ✅ Churned User Profile
+## Recommendations
 
-* Most churned users are **new users** with less than 3 months tenure
-* Churned users tend to be concentrated in **Tier 1 cities**, contrary to expectations
-* A significant share of churned users **filed complaints** or gave **low satisfaction scores**
+* Target users with tenure > 6 months and inactivity > 15 days through personalized retention campaigns.
+* Provide onboarding discounts for new users (tenure ≤ 3 months) to increase first-order conversions.
+* Prioritize customer support outreach to users with complaint history or satisfaction scores ≤ 3.
 
-### 📐 RFA Behavior Model Insights
-
-* **F (Tenure)** is the **most predictive** variable: long-term users are far less likely to churn
-* **R (Recency)** and **A (App Usage Hours)** showed no strong correlation with churn
-* Churn prediction should prioritize tenure-based segmentation and user lifecycle monitoring
-
-### 🧠 Strategic Recommendations
-
-#### 🔁 Retention Strategy: Dormant Loyal Users
-
-* Target users with `Tenure > 6` and `DaySinceLastOrder > 15`
-* Offer **personalized cashback incentives** or **reactivation coupons**
-* Prioritize those with low satisfaction or complaint history
-
-#### 🎯 Conversion Strategy: New Users at Risk
-
-* Identify new users (`Tenure <= 3`) who haven’t placed orders
-* Trigger **first-order discount pushes** or **onboarding tutorials**
-* Track early drop-off in funnel via `DaySinceLastOrder`
-
----
-
-## 🧮 SQL Highlights
-
-We used SQLite within Colab to simulate platform-level behavioral queries:
+## Representative SQL Query
 
 ```sql
--- Dormant loyal users with low satisfaction
+-- Identify dormant, at-risk users for targeted retention
 SELECT * FROM users
 WHERE Tenure > 6
   AND DaySinceLastOrder > 15
   AND (SatisfactionScore <= 3 OR Complain = 1);
-
--- New users with no follow-up engagement
-SELECT * FROM users
-WHERE Tenure <= 3
-  AND DaySinceLastOrder > 10;
 ```
 
-These queries enabled segmentation for targeted CRM strategies, mirroring the kind of insight TikTok Strategy teams might surface in internal dashboards.
+## Reproducibility
 
----
+### Setup
 
-## 📎 Portfolio Integration
+Clone this repository and set up the environment:
 
-* 🔗 [Colab Notebook (view)](your_colab_link_here)
-* 📄 Optional: final\_report.pdf or Notion embed
-* 🧠 Designed for showcasing Python + SQL + business insight thinking
+```bash
+git clone https://github.com/your-username/livestream-churn-analysis.git
+cd livestream-churn-analysis
 
----
+# With conda
+conda create -n churn-env python=3.9 pandas seaborn matplotlib jupyter notebook
+conda activate churn-env
 
-## 💬 About This Project
+# With pip
+pip install pandas==2.0 seaborn==0.12 matplotlib==3.7 notebook
 
-This project was independently initiated and executed to simulate the work style of a Strategy Analyst at TikTok E-commerce. It reflects proficiency in exploratory analysis, SQL-based data slicing, and e-commerce behavior interpretation.
+# Run notebook
+jupyter notebook
+```
 
-The entire pipeline was constructed from raw Excel input to segmented strategy recommendations, demonstrating both analytical and product-oriented thinking.
+### Public Colab Notebook
+
+[View and run online via Google Colab](your_colab_link_here)
